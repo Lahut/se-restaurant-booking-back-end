@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -107,7 +109,7 @@ public class RestaurantController {
 
         DocumentSnapshot document = future.get();
 
-        restaurant = document.toObject(Restaurant.class);
+        restaurant = document.toObject(Restaurant.class); //get object of Restaurant
 
         List<Duration> allDuration = restaurant.getDurations();
 
@@ -139,4 +141,35 @@ public class RestaurantController {
 
         return ticket.getId();
     }
+
+    @CrossOrigin
+    @PostMapping("/resetallseat")
+    public String ResetALlSeat(){
+        String[]  Allduration = {"11.00-12.30","12.30-14.000","14.00-15.30",
+        "15.30-17.00","17.00-18.30","18.30-20.00","20.00-21.30"};
+        String[] AllRestaurant = {"Major-Ratchayothin","Esplanade-Ngamwongwan-Khae-Rai","Pinklao"};
+
+        for (String location : AllRestaurant){
+            Map<String,Object> docData = new HashMap<>();
+            List<Map> duration = new ArrayList<>();
+            docData.put("name",location);
+            for (String time : Allduration) {
+                Map<String,Object> durationDetail = new HashMap<>();
+                durationDetail.put("time",time);
+                durationDetail.put("seat",15);
+                durationDetail.put("status",true);
+                duration.add(durationDetail);
+            }
+            docData.put("durations",duration);
+            ApiFuture<WriteResult> future = db.getFirebase()
+                    .collection("Restaurant")
+                    .document(location)
+                    .set(docData);
+        }
+
+        return "ทำการรีเซ็ทที่นั่งเรียบร้อย" ;
+
+        }
+
+
 }

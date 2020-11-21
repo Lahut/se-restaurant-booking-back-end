@@ -33,7 +33,7 @@ public class FirebaseInitalizer {
         InputStream serviceAccount =
                         this.getClass()
                         .getClassLoader()
-                        .getResourceAsStream("./se-restaurant-booking-firebase-adminsdk-qrfyj-9eb2a841e1.json");
+                        .getResourceAsStream("./se-restaurant-booking-firebase-adminsdk-qrfyj-9996a7c2e3.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -46,28 +46,29 @@ public class FirebaseInitalizer {
         }
 
 
+//  Initialize Seat for all major
 
-        String[]  Allduration = {"11.00-12.30","12.30-14.000","14.00-15.30",
-        "15.30-17.00","17.00-18.30","18.30-20.00","20.00-21.30"};
-        String[] AllRestaurant = {"Major-Ratchayothin","Esplanade-Ngamwongwan-Khae-Rai","Pinklao"};
-
-        for (String location : AllRestaurant){
-            Map<String,Object> docData = new HashMap<>();
-            List<Map> duration = new ArrayList<>();
-            docData.put("name",location);
-            for (String time : Allduration) {
-                Map<String,Object> durationDetail = new HashMap<>();
-                durationDetail.put("time",time);
-                durationDetail.put("seat",15);
-                durationDetail.put("status",true);
-                duration.add(durationDetail);
-            }
-            docData.put("durations",duration);
-            ApiFuture<WriteResult> future = getFirebase()
-                    .collection("Restaurant")
-                    .document(location)
-                    .set(docData);
-        }
+//        String[]  Allduration = {"11.00-12.30","12.30-14.000","14.00-15.30",
+//        "15.30-17.00","17.00-18.30","18.30-20.00","20.00-21.30"};
+//        String[] AllRestaurant = {"Major-Ratchayothin","Esplanade-Ngamwongwan-Khae-Rai","Pinklao"};
+//
+//        for (String location : AllRestaurant){
+//            Map<String,Object> docData = new HashMap<>();
+//            List<Map> duration = new ArrayList<>();
+//            docData.put("name",location);
+//            for (String time : Allduration) {
+//                Map<String,Object> durationDetail = new HashMap<>();
+//                durationDetail.put("time",time);
+//                durationDetail.put("seat",15);
+//                durationDetail.put("status",true);
+//                duration.add(durationDetail);
+//            }
+//            docData.put("durations",duration);
+//            ApiFuture<WriteResult> future = getFirebase()
+//                    .collection("Restaurant")
+//                    .document(location)
+//                    .set(docData);
+//        }
 
 
 
