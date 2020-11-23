@@ -171,5 +171,64 @@ public class RestaurantController {
 
         }
 
+    @CrossOrigin
+    @PostMapping("/deleteTicket/{ticketId}")
+    public String DeleteTicket(@PathVariable String ticketId) throws ExecutionException, InterruptedException {
+        DocumentReference docRef = db.getFirebase().collection("Ticket").document(ticketId);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+
+
+        Ticket ticket;
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            ticket = document.toObject(Ticket.class);
+            Restaurant restaurant ;
+
+            DocumentReference docRef_2 = db.getFirebase()
+                    .collection("Restaurant")
+                    .document(ticket.getLocation());
+
+            ApiFuture<DocumentSnapshot> future_2 = docRef_2.get();
+
+            DocumentSnapshot document_2 = future_2.get();
+
+            restaurant = document_2.toObject(Restaurant.class); //get object of Restaurant
+
+            List<Duration> allDuration = restaurant.getDurations();
+
+            for ( Duration d : allDuration){
+                //logger.info("result"+d.getTime()+ticket.getTime()+d.getSeat()+ticket.getSeat());
+                if(d.getTime().equals(ticket.getTime())){
+                    Integer newSeat = d.getSeat() + ticket.getSeat();
+                    d.setSeat(newSeat);
+                    if(d.getSeat() > 0){
+                        d.setStatus(true);
+                    }
+                    restaurant.setDurations(allDuration);
+                    ApiFuture<WriteResult> newDuration = db.getFirebase()
+                            .collection("Restaurant")
+                            .document(ticket.getLocation())
+                            .set(restaurant);
+                    return "ลบสำเเร็จ";
+                }
+            }
+
+
+
+        }else{
+            return "ขออภัยไม่พบเลขที่นั่งค่ะ";
+        }
+
+
+
+
+
+        return "ขออภัยไม่พบเลขที่นั่งค่ะ";
+
+
+    }
+
+
+
 
 }
