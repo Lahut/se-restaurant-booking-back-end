@@ -200,6 +200,9 @@ public class RestaurantController {
                 //logger.info("result"+d.getTime()+ticket.getTime()+d.getSeat()+ticket.getSeat());
                 if(d.getTime().equals(ticket.getTime())){
                     Integer newSeat = d.getSeat() + ticket.getSeat();
+                    if(newSeat > 15){
+                        newSeat = 15;
+                    }
                     d.setSeat(newSeat);
                     if(d.getSeat() > 0){
                         d.setStatus(true);
@@ -209,6 +212,7 @@ public class RestaurantController {
                             .collection("Restaurant")
                             .document(ticket.getLocation())
                             .set(restaurant);
+                    ApiFuture<WriteResult> writeResult = db.getFirebase().collection("Ticket").document(ticketId).delete();
                     return "ลบสำเเร็จ";
                 }
             }
