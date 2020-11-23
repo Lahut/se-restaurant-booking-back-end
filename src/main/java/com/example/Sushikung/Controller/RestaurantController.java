@@ -167,6 +167,27 @@ public class RestaurantController {
                     .set(docData);
         }
 
+            try {
+                // retrieve a small batch of documents to avoid out-of-memory errors
+                ApiFuture<QuerySnapshot> future = db.getFirebase().collection("Ticket").get();
+                int deleted = 0;
+                // future.get() blocks on document retrieval
+                List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+                for (QueryDocumentSnapshot document : documents) {
+                    document.getReference().delete();
+                    ++deleted;
+                }
+//                if (deleted >= 1) {
+//                    // retrieve and delete another batch
+//                    deleteCollection(collection, batchSize);
+//                }
+            } catch (Exception e) {
+                System.err.println("Error deleting collection : " + e.getMessage());
+            }
+
+
+
+
         return "ทำการรีเซ็ทที่นั่งเรียบร้อย" ;
 
         }
